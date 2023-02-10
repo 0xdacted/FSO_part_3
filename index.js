@@ -48,6 +48,22 @@ app.get('/api/info', (request, response) =>{
   response.send(`Phonebook has info for ${persons.length} people. <p>${date}</p>`)
 })
 
+app.post('/api/persons', (request, response) => {
+  const name = request.body.name
+  const number = request.body.number
+ 
+  const person = {
+    name: name,
+    number: number,
+    date: new Date(),
+    id: Math.random() * 10
+  }
+  console.log(person)
+  persons = persons.concat(person)
+  response.json
+})
+
+
 app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
   const filteredPersons = persons.filter(person => person.id !== id)
