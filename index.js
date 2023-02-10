@@ -26,8 +26,14 @@ let persons = [
   }
 ]
 
+
 app.get('/api/persons', (request, response) => {
   response.json(persons)
+})
+
+app.get('/api/info', (request, response) =>{
+  let date = new Date()
+  response.send(`Phonebook has info for ${persons.length} people. <p>${date}</p>`)
 })
 
 const PORT = 3001
