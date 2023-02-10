@@ -51,12 +51,31 @@ app.get('/api/info', (request, response) =>{
 app.post('/api/persons', (request, response) => {
   const name = request.body.name
   const number = request.body.number
- 
+  const duplicateName = persons.find(person => person.name === name)
+  if (!name) {
+    return response.status(400).json({
+      error: 'name missing'
+    })
+  }
+
+  if (duplicateName) {
+    return response.status(400).json({
+      error: 'name must be unique'
+    })
+  }
+  
+  if (!number) {
+    return response.status(400).json({
+      error: 'number missing'
+    })
+  }
+
   const person = {
+    id: Math.random() * 10,
     name: name,
     number: number,
-    date: new Date(),
-    id: Math.random() * 10
+    date: new Date()
+
   }
   console.log(person)
   persons = persons.concat(person)
