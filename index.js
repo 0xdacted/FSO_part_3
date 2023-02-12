@@ -63,8 +63,13 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/info', (request, response) =>{
-  const date = new Date()
-  response.send(`Phonebook has info for ${persons.length} people. <p>${date}</p>`)
+  Person.countDocuments({}, (error, count) => {
+    if (error) {
+      return response.status(500).json({error: 'Failed to retrieve count from database'})
+    }
+    const date = new Date();
+    response.send(`Phonebook has info for ${count} people. <p>${date}</p>`)
+  })
 })
 
 app.post('/api/persons', (request, response) => {
