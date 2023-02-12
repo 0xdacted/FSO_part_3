@@ -43,15 +43,9 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(person => person.id === id)
-
-  if (person) {
+  Person.findById(request.params.id).then(person => {
     response.json(person)
-  } 
-  else {
-    response.status(404).end()
-  }
+  })
 })
 
 app.get('/api/info', (request, response) =>{
@@ -62,8 +56,8 @@ app.get('/api/info', (request, response) =>{
 app.post('/api/persons', (request, response) => {
   const name = request.body.name
   const number = request.body.number
-  const duplicateName = persons.find(person => person.name === name)
-  if (!name) {
+  const duplicateName = Person.find(person => person.name === name)
+  if (name.content === undefined) {
     return response.status(400).json({
       error: 'name missing'
     })
@@ -75,7 +69,7 @@ app.post('/api/persons', (request, response) => {
     })
   }
   
-  if (!number) {
+  if (number.content === undefined) {
     return response.status(400).json({
       error: 'number missing'
     })
@@ -88,9 +82,11 @@ app.post('/api/persons', (request, response) => {
     date: new Date()
 
   }
-  persons = persons.concat(person)
+  
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
   app.use(morgan(':method :url :status :res[content-length] - :response-time ms :postData'));
-  response.json(person)
 })
 
 
