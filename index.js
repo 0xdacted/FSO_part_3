@@ -65,19 +65,12 @@ app.post('/api/persons', (request, response) => {
   const name = request.body.name
   const number = request.body.number
 
-  // const duplicateName = Person.find(person => person.name === name)
   if (name === undefined) {
     return response.status(400).json({
       error: 'name missing'
     })
   }
 
-  // if (duplicateName !== null) {
-  //   return response.status(400).json({
-  //     error: 'name must be unique'
-  //   })
-  // }
-  
   if (number === undefined) {
     return response.status(400).json({
       error: 'number missing'
@@ -101,6 +94,19 @@ app.post('/api/persons', (request, response) => {
   app.use(morgan(':method :url :status :res[content-length] - :response-time ms :postData'));
 })
 
+app.put('/api/persons/:id', (request, response) => {
+  const body = request.body
+
+  const person = {
+    number: body.number,
+    date: body.date
+  }
+  Person.findByIdAndUpdate(request.params.id, person, {new: true})
+  .then(updatedPerson => {
+    response.json(updatedPerson)
+  })
+  .catch(error => next(error))
+})
 
 app.delete('/api/persons/:id', (request, response) => {
   Person.findByIdAndRemove(request.params.id)
@@ -133,3 +139,12 @@ const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
+
+
+  // const duplicateName = Person.find(person => person.name === name)
+    // if (duplicateName !== null) {
+  //   return response.status(400).json({
+  //     error: 'name must be unique'
+  //   })
+  // }
+  
