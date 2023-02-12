@@ -38,14 +38,14 @@ morgan.token('postData', function (req, res) {
   return JSON.stringify(req.body);
 });
 
-app.get('/api/persons', (request, response) => {
-  response.json(persons)
-})
-
 app.get('/api/persons/:id', (request, response) => {
   Person.findById(request.params.id).then(person => {
     response.json(person)
   })
+})
+
+app.get('/api/persons', (request, response) => {
+  response.json(persons)
 })
 
 app.get('/api/info', (request, response) =>{
@@ -56,35 +56,39 @@ app.get('/api/info', (request, response) =>{
 app.post('/api/persons', (request, response) => {
   const name = request.body.name
   const number = request.body.number
-  const duplicateName = Person.find(person => person.name === name)
-  if (name.content === undefined) {
+
+  // const duplicateName = Person.find(person => person.name === name)
+  if (name === undefined) {
     return response.status(400).json({
       error: 'name missing'
     })
   }
 
-  if (duplicateName) {
-    return response.status(400).json({
-      error: 'name must be unique'
-    })
-  }
+  // if (duplicateName !== null) {
+  //   return response.status(400).json({
+  //     error: 'name must be unique'
+  //   })
+  // }
   
-  if (number.content === undefined) {
+  if (number === undefined) {
     return response.status(400).json({
       error: 'number missing'
     })
   }
 
-  const person = {
+  const person = new Person({
     id: Math.random() * 10,
     name: name,
     number: number,
     date: new Date()
-
-  }
+  })
   
   person.save().then(savedPerson => {
     response.json(savedPerson)
+  })
+  .catch(error => {
+    console.error(error);
+    response.status(500).json({ error: 'Failed to save person to the database' });
   })
   app.use(morgan(':method :url :status :res[content-length] - :response-time ms :postData'));
 })
