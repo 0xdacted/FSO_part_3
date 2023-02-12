@@ -5,10 +5,11 @@ const cors = require('cors')
 const app = express()
 const Person = require('./models/person')
 
+app.use(express.static('build'))
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :postData'))
 app.use(cors())
-app.use(express.static('build'))
+
 
 
 let persons = [
@@ -108,6 +109,12 @@ app.delete('/api/persons/:id', (request, response) => {
   })
   .catch(error => next(error))
 })
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({error: 'unknown endpoint'})
+}
+
+app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
