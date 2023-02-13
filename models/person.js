@@ -15,7 +15,7 @@ mongoose.connect(url)
 })
 
 const phoneNumberValidator = (value) => {
-  const regex = /^d{2,3}-\d{6-7})$/
+  const regex = /^\d{2,3}-\d{6,7}$/
   return regex.test(value)
 }
 

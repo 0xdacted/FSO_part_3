@@ -88,23 +88,22 @@ app.post('/api/persons', (request, response, next) => {
     })
   }
   
-  const personWithSameName = Person.find({name:name}) 
-
-  if (personWithSameName) {
-    return response.status(409).json({
-      error: `Name '${name}' already exists in the phonebook`
-    })
-  }
-
-  const person = new Person({
-    id: Math.random() * 10,
-    name: name,
-    number: number,
-    date: new Date()
+  Person.find({ name: name })
+  .then(persons => {
+    if (persons.length > 0) {
+      return response.status(409).json({
+        error: `Name '${name}' already exists in the phonebook`
+      });
+    }
+    const person = new Person({
+      name: name,
+      number: number,
+      date: new Date()
+    });
+    return person.save();
   })
-  
-  person.save().then(savedPerson => {
-    response.json(savedPerson)
+  .then(savedPerson => {
+    response.json(savedPerson);
   })
   .catch(error => next(error));
 
@@ -112,13 +111,9 @@ app.post('/api/persons', (request, response, next) => {
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-  const body = request.body
 
-  const person = {
-    number: body.number,
-    date: body.date
-  }
-  Person.findByIdAndUpdate(request.params.id, {number}, {new: true, runValidators: true, context: 'query'})
+  const number = request.body.number
+  Person.findByIdAndUpdate(request.params.id, number, {new: true, runValidators: true, context: 'query'})
   .then(updatedPerson => {
     response.json(updatedPerson)
   })
