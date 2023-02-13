@@ -2,6 +2,7 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const logger = require('./utils/logger')
+const config = require('./utils/config')
 const app = express()
 const Person = require('./models/person')
 
@@ -129,8 +130,8 @@ app.use(errorHandler)
 
 
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+app.listen(config.PORT, () => {
+  logger.info(`Server running on port ${config.PORT}`)
 })
 
 
