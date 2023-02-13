@@ -87,6 +87,14 @@ app.post('/api/persons', (request, response, next) => {
       error: 'number missing'
     })
   }
+  
+  const personWithSameName = Person.find({name:name}) 
+
+  if (personWithSameName) {
+    return response.status(409).json({
+      error: `Name '${name}' already exists in the phonebook`
+    })
+  }
 
   const person = new Person({
     id: Math.random() * 10,
@@ -139,6 +147,9 @@ const errorHandler = (error, request, response, next) => {
   }
   else if (error.name === 'ValidationError') {
     return response.status(400).json({error: error.message})
+  }
+  else if (error.message === 'Name already exists') {
+    return response.status(400).json({error: 'Name already exists in the phonebook'})
   }
   next(error)
 }
