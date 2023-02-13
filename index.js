@@ -98,14 +98,12 @@ app.post('/api/persons', (request, response, next) => {
   person.save().then(savedPerson => {
     response.json(savedPerson)
   })
-  .catch(error => {
-    console.error(error);
-    response.status(500).json({ error: 'Failed to save person to the database' });
-  })
+  .catch(error => next(error));
+  
   app.use(morgan(':method :url :status :res[content-length] - :response-time ms :postData'));
 })
 
-app.put('/api/persons/:id', (request, response) => {
+app.put('/api/persons/:id', (request, response, next) => {
   const body = request.body
 
   const person = {
