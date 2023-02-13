@@ -1,18 +1,5 @@
 const mongoose = require('mongoose')
 
-mongoose.set('strictQuery', false)
-
-
-console.log('connecting to', url)
-
-mongoose.connect(url)
-  .then(result => {
-    console.log('connected to MongoDB')
-  })
-  .catch((error) => {
-    console.log('error connecting to MONGODB:', error.message)
-  })
-
 const phoneNumberValidator = (value) => {
   const regex = /^\d{2,3}-\d{6,7}$/
   return regex.test(value)
